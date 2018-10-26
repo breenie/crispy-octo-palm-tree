@@ -48,6 +48,6 @@ node index.js
 Successfully uploaded to s3://jibber-jabber/c34dd9fc-028e-412d-b3d6-850acc56fabc.jpeg
 ```
 
-On a mac you'll bne asked to allow node access to your camera. If you want it to work you'll have to allow it.
+On a mac you'll be asked to allow node access to your camera. If you want it to work you'll have to allow it.
 
 Make sure you smile and then check your S3 bucket. The image is also written to `./test.jpg` if you want to view it locally.
