@@ -1,0 +1,24 @@
+{
+  "name": "crispy-octo-palm-tree",
+  "version": "1.0.0",
+  "description": "Capture webcam image and push to S3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/breenie/crispy-octo-palm-tree.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/breenie/crispy-octo-palm-tree/issues"
+  },
+  "homepage": "https://github.com/breenie/crispy-octo-palm-tree#readme",
+  "dependencies": {
+    "aws-sdk": "2.343.0",
+    "node-webcam": "0.4.5",
+    "uuid": "3.3.2"
+  }
+}
