@@ -2,9 +2,11 @@
   "name": "crispy-octo-palm-tree",
   "version": "1.0.0",
   "description": "Capture webcam image and push to S3",
-  "main": "index.js",
+  "main": "lib/webcam.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "yarn jest",
+    "monitor-start": "yarn forever start --minUptime=1000 --spinSleepTime=1000 forever.json",
+    "monitor-stop": "yarn forever stop crispy-octo-palm-tree"
   },
   "repository": {
     "type": "git",
@@ -18,7 +20,41 @@
   "homepage": "https://github.com/breenie/crispy-octo-palm-tree#readme",
   "dependencies": {
     "aws-sdk": "2.343.0",
+    "commander": "2.20.0",
+    "forever": "1.0.0",
     "node-webcam": "0.4.5",
-    "uuid": "3.3.2"
+    "sharp": "0.22.1",
+    "twitter": "1.7.1",
+    "uuid": "3.3.2",
+    "webpack": "4.30.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.4.3",
+    "@babel/plugin-proposal-class-properties": "7.4.0",
+    "@babel/plugin-proposal-decorators": "7.4.0",
+    "@babel/plugin-proposal-do-expressions": "7.2.0",
+    "@babel/plugin-proposal-export-default-from": "7.2.0",
+    "@babel/plugin-proposal-export-namespace-from": "7.2.0",
+    "@babel/plugin-proposal-function-bind": "7.2.0",
+    "@babel/plugin-proposal-function-sent": "7.2.0",
+    "@babel/plugin-proposal-json-strings": "7.2.0",
+    "@babel/plugin-proposal-logical-assignment-operators": "7.2.0",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "7.4.3",
+    "@babel/plugin-proposal-numeric-separator": "7.2.0",
+    "@babel/plugin-proposal-optional-chaining": "7.2.0",
+    "@babel/plugin-proposal-pipeline-operator": "7.3.2",
+    "@babel/plugin-proposal-throw-expressions": "7.2.0",
+    "@babel/plugin-syntax-dynamic-import": "7.2.0",
+    "@babel/plugin-syntax-import-meta": "7.2.0",
+    "@babel/preset-env": "7.4.3",
+    "babel-core": "6.26.3",
+    "babel-jest": "24.7.1",
+    "babel-loader": "8.0.5",
+    "jest": "24.7.1",
+    "serverless-plugin-webpack": "1.5.1",
+    "serverless-pseudo-parameters": "2.4.0"
+  },
+  "bin": {
+    "crispy-octo-palm-tree": "./index.js"
   }
 }

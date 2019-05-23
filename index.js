@@ -1,45 +1,96 @@
-const NodeWebCam = require("node-webcam");
-const AWS = require("aws-sdk");
-const uuid = require("uuid/v4");
+#!/usr/bin/env node
+
 const config = {
   bucket: process.env["BUCKET"],
+  queue: process.env["QUEUE"],
+  accountId: process.env["AWS_ACCOUNT_ID"],
   region: process.env["AWS_DEFAULT_REGION"] || "eu-west-1",
   format: "png" // Note node-webcam expects "jpeg" not "jpg"
 };
 
-const opts = {
-  width: 1280,
-  height: 720,
-  quality: 100,
-  delay: 0,
-  saveShots: true,
-  output: config.format,
-  device: false,
-  callbackReturn: "base64",
-  verbose: false
+const commander = require("commander");
+const webcam = require("./lib/webcam");
+const AWS = require("aws-sdk");
+const sqs = new AWS.SQS({region: config['region']});
+
+const getQueueUrl = (name) => {
+
+  return new Promise((resolve, reject) => {
+    sqs.getQueueUrl({QueueName: name, QueueOwnerAWSAccountId: config['accountId']})
+      .promise()
+      .then((data) => {
+        resolve(data["QueueUrl"]);
+      })
+      .catch(reject);
+  });
 };
 
-const WebCam = NodeWebCam.create(opts);
 
-WebCam.capture("test", (err, data) => {
-  // noinspection JSCheckFunctionSignatures
-  const S3 = new AWS.S3({Region: config.region});
-  const buffer = new Buffer(data.replace(/^data:image\/\w+;base64,/, ""), "base64");
-  const options = {
-    Bucket: config.bucket,
-    Key: uuid() + "." + config.format,
-    Body: buffer,
-    ContentEncoding: "base64",
-    ContentType: "image/" + config.format
-  };
-  
-  S3.putObject(options, (err, data) => {
-    if (err) {
-      console.log(err);
-      console.log("Error uploading data: ", data);
-    } else {
-      console.log(data);
-      console.log("Successfully uploaded to", ["s3://", options.Bucket, options.Key].join("/"));
+const program = {
+  snap: () => {
+    webcam(config)
+      .then((path) => {
+        console.log(`Successfully uploaded to s3://${path}`);
+        return path;
+      })
+      .catch(console.error);
+
+  },
+  monitor: async () => {
+    const queueUrl = await getQueueUrl(config.queue);
+
+    console.log(`Listening to ${queueUrl}...`);
+
+    sqs.receiveMessage({
+      MessageAttributeNames: [
+        "All"
+      ],
+      MaxNumberOfMessages: 1,
+      QueueUrl: queueUrl,
+      VisibilityTimeout: 20,
+      WaitTimeSeconds: 20
+    })
+      .promise()
+      .then((data) => {
+        if (data.Messages) {
+          data.Messages.map(record => {
+            const message = JSON.parse(record.Body);
+
+            console.log(message);
+
+            if (message.action && 'snappy-snap' === message.action) {
+              program.snap();
+
+
+            }
+          });
+        }
+      }).catch(console.log);
+  },
+  invoke: async () => {
+    const queueUrl = await getQueueUrl(config.queue);
+
+    console.log(`Sending message to ${queueUrl}...`);
+
+    sqs.sendMessage({
+      QueueUrl: queueUrl,
+      MessageBody: JSON.stringify({action: "snappy-snap"}),
+    })
+      .promise()
+      .then((data) => {
+        console.log(`Sent MessageId: ${data['MessageId']}`);
+      }).catch(console.log);
+
+  }
+};
+
+commander.arguments("<action>")
+  .action((action, cmd) => {
+    try {
+      program[action].apply(null);
+    } catch (e) {
+      console.log("No idea what to do for", action);
     }
   });
-});
+
+commander.parse(process.argv)

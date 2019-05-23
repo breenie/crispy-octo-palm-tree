@@ -1,0 +1,50 @@
+---
+
+service: crispy-octo-palm-tree
+
+custom:
+  queue: "${env:QUEUE}"
+  bucket: "${env:BUCKET}"
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+  stage: "${env:STAGE, 'stage'}"
+  region: "${env:AWS_DEFAULT_REGION, 'eu-west-1'}"
+
+  environment:
+    STAGE: "${self:provider.stage}"
+    TWITTER_CONSUMER_KEY: ${env:TWITTER_CONSUMER_KEY}
+    TWITTER_CONSUMER_SECRET: ${env:TWITTER_CONSUMER_SECRET}
+    TWITTER_ACCESS_TOKEN_KEY: ${env:TWITTER_ACCESS_TOKEN_KEY}
+    TWITTER_ACCESS_TOKEN_SECRET: ${env:TWITTER_ACCESS_TOKEN_SECRET}
+
+functions:
+  recognise:
+    handler: handler.recognise
+    events:
+      - s3:
+          bucket: "${self:custom.bucket}"
+          event: s3:ObjectCreated:*
+
+resources:
+  Description: "${self:service}__${self:provider.stage}"
+  Resources:
+    Queue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: "${self:custom.queue}"
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt: [Dlq, Arn]
+          maxReceiveCount: "2"
+
+    Dlq:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: "${self:custom.queue}__dlq"
+
+plugins:
+  - serverless-plugin-webpack
+  - serverless-pseudo-parameters

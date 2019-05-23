@@ -43,7 +43,7 @@ Optional environment variables:
 ### Pushing an image
 
 ```sh
-node index.js
+node webcam.js
 { ETag: '"36b72d2a9943bcc66abd57281b5e71cc"' }
 Successfully uploaded to s3://jibber-jabber/c34dd9fc-028e-412d-b3d6-850acc56fabc.jpeg
 ```

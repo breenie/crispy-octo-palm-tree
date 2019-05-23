@@ -1,0 +1,10 @@
+{
+  "uid": "crispy-octo-palm-tree",
+  "append": true,
+  "watch": true,
+  "script": "index.js",
+  "args": ["monitor"],
+  "sourceDir": "./",
+  "minUptime": 1000,
+  "spinSleepTime": 1000
+}
