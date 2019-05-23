@@ -56,8 +56,7 @@ const tweeeeeeeet = (media_data, status) => {
         };
         return client.post('statuses/update', message);
       });
-}
-
+};
 
 module.exports.recognise = async (event, context, callback) => {
   return await Promise.all(

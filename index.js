@@ -25,7 +25,6 @@ const getQueueUrl = (name) => {
   });
 };
 
-
 const program = {
   snap: () => {
     webcam(config)
@@ -60,8 +59,6 @@ const program = {
 
             if (message.action && 'snappy-snap' === message.action) {
               program.snap();
-
-
             }
           });
         }
@@ -80,7 +77,6 @@ const program = {
       .then((data) => {
         console.log(`Sent MessageId: ${data['MessageId']}`);
       }).catch(console.log);
-
   }
 };
 
