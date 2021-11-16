@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/breenie/crispy-octo-palm-tree#readme",
   "dependencies": {
-    "aws-sdk": "2.343.0",
+    "aws-sdk": "2.814.0",
     "commander": "2.20.0",
     "forever": "1.0.0",
     "node-webcam": "0.4.5",
