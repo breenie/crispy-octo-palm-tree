@@ -23,7 +23,7 @@
     "commander": "2.20.0",
     "forever": "1.0.0",
     "node-webcam": "0.4.5",
-    "sharp": "0.22.1",
+    "sharp": "0.30.5",
     "twitter": "1.7.1",
     "uuid": "3.3.2",
     "webpack": "4.30.0"
